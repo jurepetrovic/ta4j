@@ -27,11 +27,16 @@ import org.junit.Test;
 import org.ta4j.core.ExternalIndicatorTest;
 import org.ta4j.core.Indicator;
 import org.ta4j.core.TestUtils;
+import org.ta4j.core.Bar;
 import org.ta4j.core.BarSeries;
 import org.ta4j.core.indicators.AbstractIndicatorTest;
 import org.ta4j.core.indicators.XLSIndicatorTest;
+import org.ta4j.core.mocks.MockBar;
+import org.ta4j.core.mocks.MockBarSeries;
 import org.ta4j.core.num.Num;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static org.junit.Assert.assertEquals;
@@ -39,6 +44,7 @@ import static org.ta4j.core.TestUtils.assertIndicatorEquals;
 
 public class ADXIndicatorTest extends AbstractIndicatorTest<BarSeries, Num> {
 
+	protected BarSeries data;
     private ExternalIndicatorTest xls;
 
     public ADXIndicatorTest(Function<Number, Num> nf) throws Exception {
@@ -65,6 +71,45 @@ public class ADXIndicatorTest extends AbstractIndicatorTest<BarSeries, Num> {
         assertIndicatorEquals(xls.getIndicator(13, 8), actualIndicator);
         assertEquals(7.3884, actualIndicator.getValue(actualIndicator.getBarSeries().getEndIndex()).doubleValue(),
                 TestUtils.GENERAL_OFFSET);
+        
+        
+        // let's do some additional tests
+        extraTests();
+
     }
+
+	private void extraTests() {
+		
+		final List<Bar> bars = new ArrayList<>();
+
+		bars.add(new MockBar(887.39, 899.59, 954.99, 850.1, numFunction));
+		bars.add(new MockBar(897.8, 843.97, 914.84, 780.00, numFunction));
+		bars.add(new MockBar(844.00, 826.67, 876.54, 790.43, numFunction));
+		bars.add(new MockBar(827.9, 775.00, 834.65, 720.00, numFunction));
+		bars.add(new MockBar(774.97, 785.2, 788.58, 720.00, numFunction));
+		bars.add(new MockBar(784.45, 795.45, 798.47, 756.42, numFunction));
+		bars.add(new MockBar(795.45, 828.75, 840.42, 777.93, numFunction));
+		bars.add(new MockBar(830.09, 823.81, 830.37, 792.67, numFunction));
+		bars.add(new MockBar(824.16, 847.56, 851.08, 815.04, numFunction));
+		bars.add(new MockBar(849.85, 847.24, 862.18, 838.36, numFunction));
+		bars.add(new MockBar(848.78, 824.63, 854, 00, 801.03, numFunction));
+		bars.add(new MockBar(828.48, 814.16, 838.46, 803.19, numFunction));
+		bars.add(new MockBar(814.5, 828.98, 837.34, 814.43, numFunction));
+		bars.add(new MockBar(829.55, 852.11, 855.61, 828.1, numFunction));
+		bars.add(new MockBar(851.13, 834.68, 857.61, 831.43, numFunction));
+		bars.add(new MockBar(834.53, 823.77, 846.45, 810.67, numFunction));
+		bars.add(new MockBar(823.17, 827.51, 835.85, 820.54, numFunction));
+		bars.add(new MockBar(827.84, 850.67, 853.99, 817.89, numFunction));
+		bars.add(new MockBar(851.67, 891.21, 925, 00, 851.67, numFunction));
+		bars.add(new MockBar(892.15, 908.5, 910.00, 867.37, numFunction));
+		data = new MockBarSeries(bars);
+
+		ADXIndicator adx = new ADXIndicator(data, 14);
+		for (int i = 0; i < bars.size(); i++) {
+			Double val = adx.getValue(i).doubleValue();
+			System.out.println("ADX i=" + i + ", val=" + val);
+		}
+		
+	}
 
 }
